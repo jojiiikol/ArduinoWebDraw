@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    hostname: db
+    container_name: db
+    environment:
+      - POSTGRES_PASSWORD=205896
+      - POSTGRES_DB=draw
+    restart: on-failure
+    ports:
+      - "5432:5432"
+  web:
+    build:
+      context: matrix
+    hostname: web
+    command: bash -c "sleep 10 && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
